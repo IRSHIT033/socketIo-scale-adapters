@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket.IO with Redis Stream Adapter</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+  </head>
+  <body>
+    <h1>Socket.IO Redis Stream Adapter Demo</h1>
+    User Id : &nbsp;<span id="userId"></span>
+    <input id="messageInput" type="text" placeholder="Enter message" />
+    <button onclick="sendMessage()">Send</button>
+    <ul id="messages"></ul>
+
+    <script>
+      const socket = io("http://localhost", {
+        transports: ["websocket", "polling"],
+      });
+
+      socket.on("connect", () => {
+        console.log("Connected:", socket.id);
+        document.getElementById("userId").innerText = socket.id;
+      });
+
+      socket.on("message", (msg) => {
+        const li = document.createElement("li");
+        li.textContent = msg;
+        document.getElementById("messages").appendChild(li);
+      });
+
+      function sendMessage() {
+        const msg = document.getElementById("messageInput").value;
+        socket.emit("message", msg);
+      }
+    </script>
+  </body>
+</html>
