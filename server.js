@@ -1,14 +1,12 @@
 import { Redis } from "ioredis";
 import { Server } from "socket.io";
-import { createAdapter } from "@socket.io/redis-streams-adapter";
+import { createAdapter } from "@socket.io/redis-adapter";
 
-const redisClient = new Redis({
-  host: "redis",
-  port: 6379,
-});
+const pubClient = new Redis({ host: "redis", port: 6379 });
+const subClient = pubClient.duplicate();
 
 const io = new Server({
-  adapter: createAdapter(redisClient),
+  adapter: createAdapter(pubClient, subClient),
   cors: {
     origin: "*",
   },
